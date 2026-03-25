@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition
@@ -10,118 +8,145 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
     video_device_arg = DeclareLaunchArgument(
-        'video_device',
-        default_value='/dev/video0',
-        description='Video device path'
+        "video_device",
+        default_value="/dev/video0",
+        description="Video device path"
     )
 
     image_width_arg = DeclareLaunchArgument(
-        'image_width',
-        default_value='960',
-        description='Image width'
+        "image_width",
+        default_value="960",
+        description="Image width"
     )
 
     image_height_arg = DeclareLaunchArgument(
-        'image_height',
-        default_value='540',
-        description='Image height'
+        "image_height",
+        default_value="540",
+        description="Image height"
     )
 
     framerate_arg = DeclareLaunchArgument(
-        'framerate',
-        default_value='15',
-        description='Camera framerate'
+        "framerate",
+        default_value="15",
+        description="Camera framerate"
     )
 
     camera_frame_id_arg = DeclareLaunchArgument(
-        'camera_frame_id',
-        default_value='ardu_cam_link',
-        description='Camera frame ID'
+        "camera_frame_id",
+        default_value="ardu_cam_link",
+        description="Camera frame ID"
     )
 
     camera_info_url_arg = DeclareLaunchArgument(
-        'camera_info_url',
+        "camera_info_url",
         default_value=[
-            'file://',
+            "file://",
             PathJoinSubstitution([
-                FindPackageShare('cv_usb_cam'),
-                'camera_info',
-                'cam.yaml'
+                FindPackageShare("cv_usb_cam"),
+                "camera_info",
+                "cam.yaml"
             ])
         ],
-        description='Camera info URL'
+        description="Camera info URL"
     )
 
     image_topic_arg = DeclareLaunchArgument(
-        'image_topic',
-        default_value='/ardu_cam_link/image_raw',
-        description='Raw image topic'
+        "image_topic",
+        default_value="/ardu_cam_link/image_raw",
+        description="Raw image topic"
     )
 
     undistorted_topic_arg = DeclareLaunchArgument(
-        'undistorted_topic',
-        default_value='/ardu_cam_link/image_undistorted',
-        description='Undistorted image topic'
+        "undistorted_topic",
+        default_value="/ardu_cam_link/image_undistorted",
+        description="Undistorted image topic"
     )
 
     enable_undistorter_arg = DeclareLaunchArgument(
-        'enable_undistorter',
-        default_value='false',
-        description='Whether to launch the image undistorter node'
+        "enable_undistorter",
+        default_value="false",
+        description="Whether to launch the image undistorter node"
     )
 
     enable_hsv_filter_arg = DeclareLaunchArgument(
-        'enable_hsv_filter',
-        default_value='false',
-        description='Enable HSV color range filtering on image_raw output'
+        "enable_hsv_filter",
+        default_value="false",
+        description="Enable HSV color range filtering on image_raw output"
     )
 
     publish_hsv_debug_topics_arg = DeclareLaunchArgument(
-        'publish_hsv_debug_topics',
-        default_value='true',
-        description='Publish /image_hsv_filtered and /image_hsv_mask when HSV filter is enabled'
+        "publish_hsv_debug_topics",
+        default_value="true",
+        description="Publish /image_hsv_filtered and /image_hsv_mask when HSV filter is enabled"
     )
 
-    h_min_arg = DeclareLaunchArgument('h_min', default_value='0', description='HSV H min (0-179)')
-    h_max_arg = DeclareLaunchArgument('h_max', default_value='179', description='HSV H max (0-179)')
-    s_min_arg = DeclareLaunchArgument('s_min', default_value='0', description='HSV S min (0-255)')
-    s_max_arg = DeclareLaunchArgument('s_max', default_value='255', description='HSV S max (0-255)')
-    v_min_arg = DeclareLaunchArgument('v_min', default_value='0', description='HSV V min (0-255)')
-    v_max_arg = DeclareLaunchArgument('v_max', default_value='255', description='HSV V max (0-255)')
+    h_min_arg = DeclareLaunchArgument("h_min", default_value="0", description="HSV H min (0-179)")
+    h_max_arg = DeclareLaunchArgument("h_max", default_value="179", description="HSV H max (0-179)")
+    s_min_arg = DeclareLaunchArgument("s_min", default_value="0", description="HSV S min (0-255)")
+    s_max_arg = DeclareLaunchArgument("s_max", default_value="255", description="HSV S max (0-255)")
+    v_min_arg = DeclareLaunchArgument("v_min", default_value="0", description="HSV V min (0-255)")
+    v_max_arg = DeclareLaunchArgument("v_max", default_value="255", description="HSV V max (0-255)")
+
+    enable_rgb_filter_arg = DeclareLaunchArgument(
+        "enable_rgb_filter",
+        default_value="false",
+        description="Enable RGB color range filtering on image_raw output"
+    )
+
+    publish_rgb_debug_topics_arg = DeclareLaunchArgument(
+        "publish_rgb_debug_topics",
+        default_value="true",
+        description="Publish /image_rgb_filtered and /image_rgb_mask when RGB filter is enabled"
+    )
+
+    r_min_arg = DeclareLaunchArgument("r_min", default_value="0", description="RGB R min (0-255)")
+    r_max_arg = DeclareLaunchArgument("r_max", default_value="255", description="RGB R max (0-255)")
+    g_min_arg = DeclareLaunchArgument("g_min", default_value="0", description="RGB G min (0-255)")
+    g_max_arg = DeclareLaunchArgument("g_max", default_value="255", description="RGB G max (0-255)")
+    b_min_arg = DeclareLaunchArgument("b_min", default_value="0", description="RGB B min (0-255)")
+    b_max_arg = DeclareLaunchArgument("b_max", default_value="255", description="RGB B max (0-255)")
 
     opencv_usb_cam_node = Node(
-        package='cv_usb_cam',
-        executable='opencv_usb_cam',
-        name='cv_usb_cam',
-        output='screen',
+        package="cv_usb_cam",
+        executable="opencv_usb_cam",
+        name="cv_usb_cam",
+        output="screen",
         parameters=[{
-            'video_device': LaunchConfiguration('video_device'),
-            'image_width': LaunchConfiguration('image_width'),
-            'image_height': LaunchConfiguration('image_height'),
-            'framerate': LaunchConfiguration('framerate'),
-            'camera_frame_id': LaunchConfiguration('camera_frame_id'),
-            'camera_info_url': LaunchConfiguration('camera_info_url'),
-            'enable_hsv_filter': LaunchConfiguration('enable_hsv_filter'),
-            'publish_hsv_debug_topics': LaunchConfiguration('publish_hsv_debug_topics'),
-            'h_min': LaunchConfiguration('h_min'),
-            'h_max': LaunchConfiguration('h_max'),
-            's_min': LaunchConfiguration('s_min'),
-            's_max': LaunchConfiguration('s_max'),
-            'v_min': LaunchConfiguration('v_min'),
-            'v_max': LaunchConfiguration('v_max'),
+            "video_device": LaunchConfiguration("video_device"),
+            "image_width": LaunchConfiguration("image_width"),
+            "image_height": LaunchConfiguration("image_height"),
+            "framerate": LaunchConfiguration("framerate"),
+            "camera_frame_id": LaunchConfiguration("camera_frame_id"),
+            "camera_info_url": LaunchConfiguration("camera_info_url"),
+            "enable_hsv_filter": LaunchConfiguration("enable_hsv_filter"),
+            "publish_hsv_debug_topics": LaunchConfiguration("publish_hsv_debug_topics"),
+            "h_min": LaunchConfiguration("h_min"),
+            "h_max": LaunchConfiguration("h_max"),
+            "s_min": LaunchConfiguration("s_min"),
+            "s_max": LaunchConfiguration("s_max"),
+            "v_min": LaunchConfiguration("v_min"),
+            "v_max": LaunchConfiguration("v_max"),
+            "enable_rgb_filter": LaunchConfiguration("enable_rgb_filter"),
+            "publish_rgb_debug_topics": LaunchConfiguration("publish_rgb_debug_topics"),
+            "r_min": LaunchConfiguration("r_min"),
+            "r_max": LaunchConfiguration("r_max"),
+            "g_min": LaunchConfiguration("g_min"),
+            "g_max": LaunchConfiguration("g_max"),
+            "b_min": LaunchConfiguration("b_min"),
+            "b_max": LaunchConfiguration("b_max"),
         }]
     )
 
     image_undistorter_node = Node(
-        condition=IfCondition(LaunchConfiguration('enable_undistorter')),
-        package='cv_usb_cam',
-        executable='image_undistorter',
-        name='image_undistorter',
-        output='screen',
+        condition=IfCondition(LaunchConfiguration("enable_undistorter")),
+        package="cv_usb_cam",
+        executable="image_undistorter",
+        name="image_undistorter",
+        output="screen",
         parameters=[{
-            'image_topic': LaunchConfiguration('image_topic'),
-            'undistorted_topic': LaunchConfiguration('undistorted_topic'),
-            'camera_info_url': LaunchConfiguration('camera_info_url'),
+            "image_topic": LaunchConfiguration("image_topic"),
+            "undistorted_topic": LaunchConfiguration("undistorted_topic"),
+            "camera_info_url": LaunchConfiguration("camera_info_url"),
         }]
     )
 
@@ -143,6 +168,14 @@ def generate_launch_description():
         s_max_arg,
         v_min_arg,
         v_max_arg,
+        enable_rgb_filter_arg,
+        publish_rgb_debug_topics_arg,
+        r_min_arg,
+        r_max_arg,
+        g_min_arg,
+        g_max_arg,
+        b_min_arg,
+        b_max_arg,
         opencv_usb_cam_node,
         image_undistorter_node,
     ])
